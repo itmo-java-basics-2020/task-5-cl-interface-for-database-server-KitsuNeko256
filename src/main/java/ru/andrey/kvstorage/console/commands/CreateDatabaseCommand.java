@@ -8,22 +8,20 @@ import ru.andrey.kvstorage.console.ExecutionEnvironment;
 public class CreateDatabaseCommand implements DatabaseCommand {
 
     private final ExecutionEnvironment environment;
-    private final CommandParams param;
+    private final String databaseName;
+    private final StringBuilder message;
 
-    public CreateDatabaseCommand(ExecutionEnvironment environment, CommandParams param) {
+    public CreateDatabaseCommand(ExecutionEnvironment environment, CommandParams params) {
         this.environment = environment;
-        this.param = param;
+        this.databaseName = params.getParam(0);
+
+        this.message = new StringBuilder();
+        this.message.append("Create database ").append(this.databaseName).append(" : ");
     }
 
     @Override
     public DatabaseCommandResult execute() {
-        try {
-            param.getParam(0);
-        } catch (IllegalArgumentException error) {
-            return DatabaseCommandResult.error(error.getMessage());
-        }
-
-        environment.addDatabase(null);
-        return DatabaseCommandResult.success("");
+        this.environment.addDatabase(null);
+        return DatabaseCommandResult.success(this.message.append("Success").toString());
     }
 }

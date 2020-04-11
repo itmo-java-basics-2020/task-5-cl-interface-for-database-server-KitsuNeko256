@@ -10,7 +10,7 @@ public class CommandParams {
 
     public String getParam(int index) {
         if (index >= params.length) {
-            throw new IllegalArgumentException("Invalid command parameter!");
+            throw new IllegalArgumentException("Parameter does not exist: invalid index " + index);
         }
         return params[index];
     }

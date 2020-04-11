@@ -14,18 +14,14 @@ public class DatabaseServer {
 
     DatabaseCommandResult executeNextCommand(String commandText) {
         if (commandText == null || commandText.isEmpty()) {
-            return DatabaseCommandResult.error("Invalid input");
-        }
-
-        DatabaseCommand command = parseCommand(commandText);
-        if (command == null) {
-            return DatabaseCommandResult.error("Invalid command name");
+            return DatabaseCommandResult.error("Input command is empty");
         }
 
         try {
+            DatabaseCommand command = parseCommand(commandText);
             return command.execute();
-        } catch (Exception error) {
-            return DatabaseCommandResult.error(error.getMessage());
+        } catch (Exception e) {
+            return DatabaseCommandResult.error(e.getMessage());
         }
     }
 
@@ -36,8 +32,8 @@ public class DatabaseServer {
         DatabaseCommands databaseCommands;
         try {
             databaseCommands = DatabaseCommands.valueOf(terms[0]);
-        } catch (IllegalArgumentException error) {
-            return null;
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Requested command " + commandText + "  not found");
         }
 
         return databaseCommands.getCommand(env, params);

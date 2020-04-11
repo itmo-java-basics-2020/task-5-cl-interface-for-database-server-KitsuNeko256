@@ -4,12 +4,16 @@ import java.util.Optional;
 
 public interface DatabaseCommandResult {
 
-    static DatabaseCommandResult success(String value) {
-        return new CommandResult(DatabaseCommandStatus.SUCCESS, value);
+    static DatabaseCommandResult success(String message) {
+        return success(message, null);
     }
 
-    static DatabaseCommandResult error(String value) {
-        return new CommandResult(DatabaseCommandStatus.FAILED, value);
+    static DatabaseCommandResult success(String message, String value) {
+        return new CommandResult(DatabaseCommandStatus.SUCCESS, message, value);
+    }
+
+    static DatabaseCommandResult error(String message) {
+        return new CommandResult(DatabaseCommandStatus.FAILED, message, null);
     }
 
     Optional<String> getResult();
@@ -27,16 +31,18 @@ public interface DatabaseCommandResult {
     class CommandResult implements DatabaseCommandResult {
 
         private final DatabaseCommandStatus commandStatus;
+        private final String message;
         private final String value;
 
-        private CommandResult(DatabaseCommandStatus commandStatus, String value) {
+        private CommandResult(DatabaseCommandStatus commandStatus, String message, String value) {
             this.commandStatus = commandStatus;
+            this.message = message;
             this.value = value;
         }
 
         @Override
         public Optional<String> getResult() {
-            if (!isSuccess()) {
+            if (!isSuccess() || value == null) {
                 return Optional.empty();
             }
             return Optional.of(value);
@@ -57,7 +63,7 @@ public interface DatabaseCommandResult {
             if (isSuccess()) {
                 return null;
             }
-            return value;
+            return message;
         }
     }
 }

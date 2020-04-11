@@ -1,28 +1,32 @@
 package ru.andrey.kvstorage.console;
 
 import ru.andrey.kvstorage.console.commands.*;
+
 public enum DatabaseCommands {
     CREATE_DATABASE {
         @Override
-        public DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams args) {
-            return new CreateDatabaseCommand(environment, args);
+        public DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams params) {
+            return new CreateDatabaseCommand(environment, params);
         }
-    }, CREATE_TABLE {
+    },
+    CREATE_TABLE {
         @Override
-        public DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams args) {
-            return new CreateTableCommand(environment, args);
+        public DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams params) {
+            return new CreateTableCommand(environment, params);
         }
-    }, UPDATE_KEY {
+    },
+    UPDATE_KEY {
         @Override
-        public DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams args) {
-            return new UpdateKeyCommand(environment, args);
+        public DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams params) {
+            return new UpdateKeyCommand(environment, params);
         }
-    }, READ_KEY {
+    },
+    READ_KEY {
         @Override
-        public DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams args) {
-            return new ReadKeyCommand(environment, args);
+        public DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams params) {
+            return new ReadKeyCommand(environment, params);
         }
     };
 
-    public abstract DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams args);
+    public abstract DatabaseCommand getCommand(ExecutionEnvironment environment, CommandParams params);
 }

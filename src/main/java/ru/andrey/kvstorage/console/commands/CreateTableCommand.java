@@ -12,31 +12,33 @@ import java.util.Optional;
 public class CreateTableCommand implements DatabaseCommand {
 
     private final ExecutionEnvironment environment;
-    private final CommandParams params;
+    private final String databaseName;
+    private final String tableName;
+    private final StringBuilder message;
 
     public CreateTableCommand(ExecutionEnvironment environment, CommandParams params) {
         this.environment = environment;
-        this.params = params;
+        this.databaseName = params.getParam(0);
+        this.tableName = params.getParam(1);
+
+        this.message = new StringBuilder();
+        this.message.append("Create table ").append(this.tableName)
+                .append(" in database ").append(this.databaseName).append(" : ");
     }
 
     @Override
     public DatabaseCommandResult execute() {
-        try {
-            params.getParam(1);
-        } catch (IllegalArgumentException error) {
-            return DatabaseCommandResult.error(error.getMessage());
-        }
-
-        Optional<Database> database = environment.getDatabase(params.getParam(0));
-        return database.map(this::tryCreateTable).orElse(DatabaseCommandResult.error("Failed to create a table!"));
+        Optional<Database> database = this.environment.getDatabase(this.databaseName);
+        return database.map(this::tryCreateTable)
+                .orElse(DatabaseCommandResult.error(this.message.append("Failure! Database not found").toString()));
     }
 
     private DatabaseCommandResult tryCreateTable(Database database) {
         try {
-            database.createTableIfNotExists(params.getParam(1));
-            return DatabaseCommandResult.success("");
-        } catch (DatabaseException databaseException) {
-            return DatabaseCommandResult.error(databaseException.getMessage());
+            database.createTableIfNotExists(this.tableName);
+            return DatabaseCommandResult.success(this.message.append("Success").toString());
+        } catch (DatabaseException e) {
+            return DatabaseCommandResult.error(e.getMessage());
         }
     }
 }
